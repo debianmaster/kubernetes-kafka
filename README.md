@@ -8,11 +8,13 @@ oc cluster up  # setup openshift on docker for Mac  (Skip this if you already ha
 git clone https://github.com/debianmaster/openshift-kafka.git && cd openshift-kafka
 oc login -u system:admin
 
-# Unfortunately we need root priv for the containers that are used in this example
-oc adm policy add-scc-to-user anyuid -z default
+
 
 # Create namespace
 oc new-project kafka
+
+# Unfortunately we need root priv for the containers that are used in this example
+oc adm policy add-scc-to-user anyuid -z default
 
 # Create Persistant Volumes  No londer need these
 #./zookeeper/bootstrap/pv.sh
