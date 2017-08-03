@@ -10,10 +10,6 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  selector:
-    matchLabels:
-      app: kafka
-      petindex: "0"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -26,10 +22,6 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  selector:
-    matchLabels:
-      app: kafka
-      petindex: "1"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -42,10 +34,6 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  selector:
-    matchLabels:
-      app: kafka
-      petindex: "2"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -58,10 +46,6 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  selector:
-    matchLabels:
-      app: kafka
-      petindex: "3"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -74,7 +58,3 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  selector:
-    matchLabels:
-      app: kafka
-      petindex: "4"
