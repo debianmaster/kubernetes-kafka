@@ -13,7 +13,7 @@ This script automates the setup. Take a look at the script before you run it:
 
 # Testing
 
-Create two sessions to the test client so we can send and see messages received:
+Create two sessions in two terminal windows to the test client so we can send and see messages received:
 
 ```
 $ oc rsh testclient bash   # terminal 1
@@ -25,13 +25,13 @@ Inside testclient pod Terminal 1:
 # ./bin/kafka-topics.sh --zookeeper zookeeper:2181 --topic test1 --create --partitions 1 \
 --replication-factor 1 #create topic
 # ./bin/kafka-console-consumer.sh --zookeeper zookeeper:2181 --topic test1 \
---from-beginning #read topic from the beginning
+--from-beginning #read topic from the beginning. Press Ctrl-C to exit.
 ```
 
 Inside testclient pod Terminal 2:
 ```
 # ./bin/kafka-console-producer.sh --broker-list kafka-0.broker.kafka.svc.cluster.local:9092,\
-kafka-1.broker.kafka.svc.cluster.local:9092 --topic test1    # Type in messages and see if they arrive on Terminal 1. Press ^Z to exit.
+kafka-1.broker.kafka.svc.cluster.local:9092 --topic test1    # Type in messages and see if they arrive on Terminal 1. Press ^C to exit.
 
 ```
 
