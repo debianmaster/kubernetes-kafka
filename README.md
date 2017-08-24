@@ -1,56 +1,69 @@
 > Thanks https://github.com/Yolean/kubernetes-kafka.
 
+# Introduction
+
+Its assumed you have installed Openshift Origin (tested with v3.6.0), docker (v1.13.0; not CE/EE versions), etc. 
+
+This script automates the setup. Take a look at the script before you run it:
 
 ```sh
 
-# Pre-req 
-oc cluster up  # setup openshift on docker for Mac  (Skip this if you already have a cluster)
-git clone https://github.com/debianmaster/openshift-kafka.git && cd openshift-kafka
-oc login -u system:admin
+./openshift-startup.sh
+```
 
+# Testing
 
+Create two sessions in two terminal windows to the test client so we can send and see messages received:
 
-# Create namespace
-oc new-project kafka
+```
+$ oc rsh testclient bash   # terminal 1
+$ oc rsh testclient bash   # terminal 2
+```
 
-# Unfortunately we need root priv for the containers that are used in this example
-oc adm policy add-scc-to-user anyuid -z default
-
-# Create Persistant Volumes  No londer need these
-#./zookeeper/bootstrap/pv.sh
-#./bootstrap/pv.sh
-
-# Create  Persistant volumes claims
-oc create -f ./bootstrap/pvc.yml
-oc create -f ./zookeeper/bootstrap/pvc.yml
-
-# Create Zookeeper & Kakfa
-oc create -f ./zookeeper/service.yml
-oc create -f ./zookeeper/zookeeper.yaml 
-oc create -f ./
-
-# Test
-oc create -f test/99testclient.yml
-oc rsh testclient   #terminal 1
-oc rsh testclient   #terminal 2
-
-## Inside testclient container Terminal 1
-./bin/kafka-topics.sh --zookeeper zookeeper:2181 --topic test1 --create --partitions 1 \
+Inside testclient pod Terminal 1:
+```
+# ./bin/kafka-topics.sh --zookeeper zookeeper:2181 --topic test1 --create --partitions 1 \
 --replication-factor 1 #create topic
-./bin/kafka-console-consumer.sh --zookeeper zookeeper:2181 --topic test1 \
---from-beginning #read topic
+# ./bin/kafka-console-consumer.sh --zookeeper zookeeper:2181 --topic test1 \
+--from-beginning #read topic from the beginning. Press Ctrl-C to exit.
+```
 
-## Inside testclient container Terminal 2
-./bin/kafka-console-producer.sh --broker-list kafka-0.broker.kafka.svc.cluster.local:9092,\
-kafka-1.broker.kafka.svc.cluster.local:9092 --topic test1    # Type message and press ^Z when done, check terminal 1
+Inside testclient pod Terminal 2:
+```
+# ./bin/kafka-console-producer.sh --broker-list kafka-0.broker.kafka.svc.cluster.local:9092,\
+kafka-1.broker.kafka.svc.cluster.local:9092 --topic test1    # Type in messages and see if they arrive on Terminal 1. Press ^C to exit.
 
+```
 
 # Scale up Cluster
-oc edit petset kakfa  #change replicas to desired number (make sure you have enough PV,PVC)
+
+I would suggest you update the metadata config in the .yml files. Thus shutdown Openshift and then re-run openshift-startup.sh. You will need to add additional PV claims. 
+
+For zookeeper they recommend you have 3 replicas as a minimum setup (default) and 5 for a prod setup. Ideally it should be an odd number.
+
+For kafka you might want to do some research on the optimal; the default is 3 replicas (or brokers).
+
 
 # Cleanup
-oc delete all,petset --all
-oc delete pv,pvc --all
+
+Openshift Origin does not maintain any state, so just shut it down to clear down the config:
+
+
+```
+oc cluster down
+```
+
+# Accessing the project via the Openshift web gui
+
+I have added admin access to the developer user, so it can see all projects. The startup script would have advised on the gui url; something like this. Thus login as developer at the url:
+
+```
+The server is accessible via web console at:
+    https://127.0.0.1:8443
+
+You are logged in as:
+    User:     developer
+    Password: <any value>
 ```
 
 ![Demo Image](https://pbs.twimg.com/media/Cx5nXXQVIAEOvzL.jpg:large)
