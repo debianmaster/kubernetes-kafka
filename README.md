@@ -53,5 +53,17 @@ Openshift Origin does not maintain any state, so just shut it down to clear down
 oc cluster down
 ```
 
+# Accessing the project via the Openshift web gui
+
+I have added admin access to the developer user, so it can see all projects. The startup script would have advised on the gui url; something like this. Thus login as developer at the url:
+
+```
+The server is accessible via web console at:
+    https://127.0.0.1:8443
+
+You are logged in as:
+    User:     developer
+    Password: <any value>
+```
 
 ![Demo Image](https://pbs.twimg.com/media/Cx5nXXQVIAEOvzL.jpg:large)
